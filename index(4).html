@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>tradelog – trading journal</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f6f8ff;--ink:#0b1437;--mute:#5d6891;--line:#cdd5f2;--blue:#1d3bff;--neg:#d6293e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--paper:#080e2b;--ink:#eaeeff;--mute:#8e9ac8;--line:#26305f;--blue:#6f86ff;--neg:#ff6b7d}}
+html{height:100%}*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font:500 14px/1.45 'Plus Jakarta Sans',system-ui,sans-serif}
+.m,.lb,td.n,th{font-family:'JetBrains Mono',ui-monospace,monospace}
+.tk{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;height:38px;background:var(--blue);color:#fff;display:flex;align-items:center;font:600 12px 'JetBrains Mono',monospace;overflow:hidden}
+.tk .l{flex:none;padding:0 12px;height:100%;display:flex;align-items:center;background:#0b1437;letter-spacing:.08em}
+.tk .w{flex:1;overflow:hidden}
+.track{display:flex;width:max-content;animation:run 70s linear infinite}
+.tk:hover .track{animation-play-state:paused}
+.it{display:flex;gap:10px;padding:0 18px;white-space:nowrap}
+.it em{font-style:normal;opacity:.8}.up{color:#b8ffd6}.dn{color:#ffc2c9}
+@keyframes run{to{transform:translateX(-50%)}}
+main{max-width:1240px;margin:0 auto;padding:26px 20px 110px}
+.view{display:none}.view.on{display:block}
+.lb{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.mark{font-weight:800;font-size:15px;letter-spacing:-.02em;margin-bottom:22px}.mark span{color:var(--mute);font-weight:500}
+.big{font-weight:800;font-size:clamp(60px,11vw,128px);line-height:.88;letter-spacing:-.06em;margin:6px 0 18px}
+.pos{color:var(--blue)}.neg{color:var(--neg)}
+.st{display:flex;gap:34px;flex-wrap:wrap;margin-bottom:28px}
+.st b{display:block;font:600 22px 'JetBrains Mono',monospace;margin-top:2px}
+.cols{display:grid;grid-template-columns:72fr 28fr;gap:22px;align-items:start}
+.stack{display:grid;gap:22px;min-width:0}
+.stag{display:grid;grid-template-columns:3fr 2fr;gap:22px}
+.p{border:1px solid var(--line);border-radius:4px;padding:16px;min-width:0}
+.hs{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.p>.lb{display:block;margin-bottom:12px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:480px}
+th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:6px 8px;border-bottom:1px solid var(--ink)}
+td{padding:8px;border-bottom:1px solid var(--line)}
+td.n{white-space:nowrap}
+.dials{display:grid;grid-template-columns:1fr 1fr;gap:14px 8px;text-align:center}
+.dial svg{width:100%;max-width:118px}.dial .lb{display:block;margin-top:2px}
+.ring{animation:draw 1.1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes draw{from{stroke-dasharray:0 999}}
+.quote{font-size:15px;line-height:1.5;margin:0;font-weight:500}
+.quote small{display:block;margin-top:8px}
+/* journal */
+.jc{display:grid;grid-template-columns:62fr 38fr;gap:26px;align-items:start}
+h1{font-weight:800;font-size:clamp(34px,5vw,54px);letter-spacing:-.045em;line-height:1;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 22px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+label{display:grid;gap:5px}
+label>span,legend{font:600 11px 'JetBrains Mono',monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+input,select,textarea{font:500 14px 'JetBrains Mono',ui-monospace,monospace;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--ink);width:100%}
+textarea{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:2px 2px 0 var(--blue)}
+.sec{margin:22px 0 10px;display:flex;gap:10px;align-items:baseline}
+.sec b{font:600 11px 'JetBrains Mono',monospace;color:var(--blue)}
+fieldset{border:0;padding:0;margin:0}
+.gc{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.seg{display:flex}.seg label{display:block}
+.seg input{position:absolute;opacity:0;width:0}
+.seg span{display:block;padding:7px 18px;border:1px solid var(--ink);margin-left:-1px;cursor:pointer;font:600 12px 'JetBrains Mono',monospace;text-transform:none;letter-spacing:0;color:var(--ink)}
+.seg label:first-child span{border-radius:4px 0 0 4px;margin:0}.seg label:last-child span{border-radius:0 4px 4px 0}
+.seg input:checked+span{background:var(--ink);color:var(--paper)}
+.seg input:focus-visible+span{outline:2px solid var(--blue);outline-offset:2px}
+.pill{border:1px solid var(--ink);border-radius:999px;background:var(--blue);color:#fff;font:600 13px 'Plus Jakarta Sans',system-ui,sans-serif;padding:11px 24px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+.pill:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.en{padding:12px 0;border-bottom:1px solid var(--line)}
+.en .h{display:flex;justify-content:space-between;gap:8px;font-weight:800}
+.en .h .m{font-weight:600}
+.en .meta{font:400 11px 'JetBrains Mono',monospace;color:var(--mute);margin:3px 0}
+.en p{margin:4px 0}
+.yn{font:600 11px 'JetBrains Mono',monospace}
+.dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:2px;padding:4px;border:1px solid var(--ink);border-radius:999px;background:var(--paper);box-shadow:3px 3px 0 var(--ink);z-index:30}
+.dock button{border:0;border-radius:999px;padding:9px 18px;background:transparent;color:var(--ink);font:600 13px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}
+.dock button[aria-current=page]{background:var(--ink);color:var(--paper)}
+.dock .add{background:var(--blue);color:#fff}
+:is(button,input,select,textarea):focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media(max-width:900px){.cols,.stag,.jc{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="tk" aria-label="Demo prices"><span class="l">DEMO</span><div class="w"><div class="track" id="track"></div></div></div>
+<main>
+<section class="view on" id="dash">
+  <div class="mark">tradelog <span>/ journal</span></div>
+  <div class="lb" id="cnt"></div>
+  <div class="big" id="big"></div>
+  <div class="st" id="st"></div>
+  <div class="cols">
+    <div class="stack">
+      <div class="p hs"><span class="lb">Equity, trade by trade</span><div id="eq"></div></div>
+      <div class="stag">
+        <div class="p"><span class="lb">Profit by timeframe</span><div id="tf"></div></div>
+        <div class="p"><span class="lb">By market</span><div class="tw" id="mt"></div></div>
+      </div>
+      <div class="p"><span class="lb">Last 7 trades</span><div class="tw" id="recent"></div></div>
+    </div>
+    <div class="stack">
+      <div class="p"><span class="lb">Gut check</span><div class="dials" id="dials"></div></div>
+      <div class="p"><span class="lb">Last lesson you wrote</span><p class="quote" id="lesson"></p></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="jrn">
+  <div class="mark">tradelog <span>/ journal</span></div>
+  <h1>Log a trade.</h1>
+  <p class="sub">One minute. Be honest, nobody is grading you.</p>
+  <div class="jc">
+    <form class="p hs" id="form">
+      <div class="sec" style="margin-top:0"><b>01</b><span class="lb">The trade</span></div>
+      <div class="f">
+        <label class="full"><span>Stock or instrument</span><input name="stock" list="names" placeholder="RELIANCE, AAPL, Swiggy IPO" required></label>
+        <label class="full"><span>Market</span><select name="market">
+          <optgroup label="India"><option>NSE India</option><option>BSE India</option><option>MCX Commodities</option></optgroup>
+          <optgroup label="United States"><option>NASDAQ</option><option>NYSE</option><option>CBOE Options</option></optgroup>
+          <optgroup label="Europe"><option>London (LSE)</option><option>Euronext</option><option>Deutsche Börse</option><option>SIX Swiss</option></optgroup>
+          <optgroup label="Asia-Pacific"><option>Tokyo (TSE)</option><option>Hong Kong (HKEX)</option><option>Shanghai / Shenzhen</option><option>Korea (KRX)</option><option>Singapore (SGX)</option><option>Australia (ASX)</option></optgroup>
+          <optgroup label="Americas and Middle East"><option>Toronto (TSX)</option><option>Brazil (B3)</option><option>Saudi (Tadawul)</option><option>Dubai (DFM)</option></optgroup>
+          <optgroup label="Other"><option>IPO / Grey market</option><option>Forex</option><option>Crypto</option><option>Futures</option></optgroup></select></label>
+        <label><span>Day</span><input type="date" name="date" required></label>
+        <label><span>Chart timeframe</span><select name="tf"><option>1m</option><option>5m</option><option selected>15m</option><option>1h</option><option>4h</option><option>1D</option><option>1W</option></select></label>
+        <label><span>Bought at</span><input type="time" name="buy" required></label>
+        <label><span>Sold at</span><input type="time" name="sell" required></label>
+      </div>
+      <div class="sec"><b>02</b><span class="lb">The result</span></div>
+      <div class="f">
+        <label><span>Made or lost</span><input type="number" step="any" name="pnl" placeholder="+1200 or -400" required></label>
+        <label><span>Reward for 1 risked</span><input type="number" step="any" min="0" name="rr" placeholder="2 means 1:2" required></label>
+        <label class="full"><span>What did this trade teach you?</span><textarea name="learn" rows="3" placeholder="The one line you want to see next time" required></textarea></label>
+      </div>
+      <div class="sec"><b>03</b><span class="lb">Gut check</span></div>
+      <div id="rc"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="pill" type="submit" id="save">Save to journal</button></div>
+    </form>
+    <div class="p"><label style="margin-bottom:6px"><span>Entries</span><input id="q" placeholder="Filter by ticker..." aria-label="Filter by ticker"></label><div id="list"></div></div>
+  </div>
+</section>
+</main>
+<nav class="dock" aria-label="Main"><button data-v="dash" aria-current="page">Dashboard</button><button data-v="jrn">Journal</button><button class="add" id="add">+ Trade</button></nav>
+<datalist id="names"><option>RELIANCE</option><option>TCS</option><option>INFOSYS</option><option>AAPL</option><option>NVDA</option><option>TSLA</option><option>Toyota</option><option>Samsung</option><option>Alibaba</option><option>Hyundai India IPO</option><option>Swiggy IPO</option><option>BTC</option><option>EURUSD</option></datalist>
+<script>
+const $=s=>document.querySelector(s),K='tj3';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>(n<0?'-':'+')+'$'+Math.abs(Math.round(n)).toLocaleString();
+/* demo ticker */
+const T=[['RELIANCE',2890.4],['TCS',4120.1],['HYUNDAI INDIA IPO',1960],['SWIGGY IPO',412],['AAPL',231.2],['NVDA',142.5],['TSLA',248.9],['TOYOTA',2680],['ARAMCO',28.9],['ALIBABA',88.4],['LG ELECTRONICS IPO',1140],['ARM',152],['REDDIT',118],['SAMSUNG',58400],['INFOSYS',1890],['BTC',66500]].map(a=>({n:a[0],p:a[1],c:0}));
+const fp=p=>p.toLocaleString(undefined,{maximumFractionDigits:2}),fc=c=>`${c>=0?'+':'-'}${Math.abs(c).toFixed(2)}%`;
+const tk=()=>T.map((t,i)=>`<span class="it"><b>${t.n}</b><em data-p="${i}">${fp(t.p)}</em><span data-c="${i}" class="${t.c>=0?'up':'dn'}">${fc(t.c)}</span></span>`).join('');
+$('#track').innerHTML=tk()+tk();
+setInterval(()=>T.forEach((t,i)=>{const m=(Math.random()-.5)*.006;t.p*=1+m;t.c+=m*100;document.querySelectorAll(`[data-p="${i}"]`).forEach(e=>e.textContent=fp(t.p));document.querySelectorAll(`[data-c="${i}"]`).forEach(e=>{e.className=t.c>=0?'up':'dn';e.textContent=fc(t.c)})}),2500);
+/* data */
+function demo(){let s=11;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+  const S=[['RELIANCE','NSE India'],['TCS','NSE India'],['AAPL','NASDAQ'],['NVDA','NASDAQ'],['Swiggy IPO','IPO / Grey market'],['Toyota','Tokyo (TSE)'],['BTC','Crypto'],['EURUSD','Forex'],['Samsung','Korea (KRX)'],['Aramco','Saudi (Tadawul)']],tf=['5m','15m','1h','4h','1D'],
+  L=['Waited for the retest and it paid off.','Entered early out of fear of missing out.','Stop was too tight for this volatility.','Stuck to the plan and let the winner run.','Sized too big after a winning streak.','Skipped it, then chased it. Never again.','Stayed patient on listing day.'],o=[];
+  for(let i=0;i<22;i++){const d=new Date();d.setDate(d.getDate()-(30-i));const [n,m]=S[Math.floor(r()*S.length)],pnl=Math.round((r()-.38)*1900),h=9+Math.floor(r()*5),dsc=r()>.3;
+    o.push({id:i+1,date:d.toISOString().slice(0,10),stock:n,market:m,tf:tf[Math.floor(r()*5)],buy:`${String(h).padStart(2,'0')}:${String(Math.floor(r()*6)*10).padStart(2,'0')}`,sell:`${String(h+1+Math.floor(r()*3)).padStart(2,'0')}:15`,pnl,rr:pnl>0?+(1+r()*2.4).toFixed(1):0,learn:L[Math.floor(r()*L.length)],disc:dsc,strat:dsc&&r()>.2,inst:r()>.5})}
+  return o}
+let D=[];try{D=JSON.parse(localStorage.getItem(K))||[]}catch(e){}if(!D.length)D=demo();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}};
+/* charts */
+function dial(p,label){const R=46,C=2*Math.PI*R;return`<div class="dial"><svg viewBox="0 0 120 120" role="img" aria-label="${label} ${p.toFixed(0)} percent"><circle cx="60" cy="60" r="57" fill="none" stroke="var(--mute)" stroke-opacity=".55" stroke-width="4" stroke-dasharray="1 4.97"/><circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--line)" stroke-width="10"/><circle class="ring" cx="60" cy="60" r="${R}" fill="none" stroke="var(--blue)" stroke-width="10" stroke-dasharray="${p/100*C} 999" transform="rotate(-90 60 60)"/><text x="60" y="66" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="19" font-weight="600" fill="var(--ink)">${p.toFixed(0)}%</text></svg><span class="lb">${label}</span></div>`}
+function line(c){if(c.length<2)return'<div class="lb">Log two trades to draw this.</div>';const W=640,H=230,P=6,mn=Math.min(0,...c),mx=Math.max(0,...c),y=v=>H-P-(v-mn)/((mx-mn)||1)*(H-2*P),x=i=>P+i/(c.length-1)*(W-2*P),pts=c.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Equity curve"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 5"/><polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="miter"/><circle cx="${x(c.length-1)}" cy="${y(c[c.length-1])}" r="4.5" fill="var(--paper)" stroke="var(--blue)" stroke-width="2.5"/></svg>`}
+function bars(d){if(!d.length)return'<div class="lb">No data yet.</div>';const W=420,mx=Math.max(...d.map(a=>Math.abs(a[1])))||1,bw=W/d.length;
+  return`<svg viewBox="0 0 ${W} 200" width="100%" role="img" aria-label="Profit by timeframe"><line x1="0" x2="${W}" y1="90" y2="90" stroke="var(--ink)"/>${d.map(([k,v],i)=>{const h=Math.abs(v)/mx*78;return`<rect x="${i*bw+bw*.18}" width="${bw*.64}" y="${v>=0?90-h:90}" height="${Math.max(h,1)}" fill="${v>=0?'var(--blue)':'var(--neg)'}"><title>${k}: ${money(v)}</title></rect><text x="${i*bw+bw/2}" y="190" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--mute)">${k}</text>`}).join('')}</svg>`}
+const yn=(v,l)=>`<span class="yn ${v?'':'neg'}">${l} ${v?'yes':'no'}</span>`;
+const grp=(a,f)=>{const m={};a.forEach(x=>{const k=f(x);(m[k]=m[k]||[]).push(x)});return m};
+const desc=()=>[...D].sort((a,b)=>(a.date+a.buy)<(b.date+b.buy)?1:-1);
+function list(){const q=$('#q').value.trim().toLowerCase(),r=desc().filter(x=>!q||x.stock.toLowerCase().includes(q));
+  $('#list').innerHTML=r.length?r.map(x=>`<div class="en"><div class="h"><span>${esc(x.stock)}</span><span class="m ${x.pnl>=0?'pos':'neg'}">${money(x.pnl)}</span></div><div class="meta">${x.date} · ${esc(x.market)} · ${x.tf} · ${x.buy}-${x.sell} · 1:${x.rr}</div><p>${esc(x.learn)}</p>${yn(x.disc,'disciplined')} &nbsp; ${yn(x.strat,'plan')} &nbsp; ${yn(x.inst,'gut')}</div>`).join(''):'<p class="lb" style="margin-top:14px">Nothing matches that ticker.</p>'}
+function render(){const t=[...D].sort((a,b)=>(a.date+a.buy)<(b.date+b.buy)?-1:1),n=t.length,net=t.reduce((a,x)=>a+x.pnl,0),w=t.filter(x=>x.pnl>0).length,pc=k=>n?t.filter(x=>x[k]).length/n*100:0,wr=n?w/n*100:0,rr=t.filter(x=>x.rr>0),arr=rr.length?rr.reduce((a,x)=>a+x.rr,0)/rr.length:0;let e=0;
+  $('#cnt').textContent=`Net profit · ${n} trades`;const b=$('#big');b.textContent=money(net);b.className='big '+(net>=0?'pos':'neg');
+  const s=(a,v)=>`<div><span class="lb">${a}</span><b>${v}</b></div>`;
+  $('#st').innerHTML=s('Win rate',wr.toFixed(0)+'%')+s('Avg reward',`1:${arr.toFixed(1)}`)+s('Kept rules',pc('disc').toFixed(0)+'%');
+  $('#eq').innerHTML=line(t.map(x=>e+=x.pnl));
+  const gt=grp(t,x=>x.tf),ord=['1m','5m','15m','1h','4h','1D','1W'];$('#tf').innerHTML=bars(ord.filter(o=>gt[o]).map(o=>[o,gt[o].reduce((a,x)=>a+x.pnl,0)]));
+  const gm=grp(t,x=>x.market);$('#mt').innerHTML=n?`<table style="min-width:260px"><tr><th>Market</th><th>#</th><th>Net</th></tr>${Object.entries(gm).map(([a,b])=>[a,b.length,b.reduce((s,x)=>s+x.pnl,0)]).sort((a,b)=>b[2]-a[2]).map(([a,c,p])=>`<tr><td>${esc(a)}</td><td class="n">${c}</td><td class="n ${p>=0?'pos':'neg'}">${money(p)}</td></tr>`).join('')}</table>`:'<div class="lb">No trades yet.</div>';
+  $('#recent').innerHTML=n?`<table><tr><th>Day</th><th>Stock</th><th>TF</th><th>In-out</th><th>Ratio</th><th>P/L</th></tr>${desc().slice(0,7).map(x=>`<tr><td class="n">${x.date.slice(5)}</td><td>${esc(x.stock)}</td><td class="n">${x.tf}</td><td class="n">${x.buy}-${x.sell}</td><td class="n">1:${x.rr}</td><td class="n ${x.pnl>=0?'pos':'neg'}">${money(x.pnl)}</td></tr>`).join('')}</table>`:'<div class="lb">Hit + Trade to log your first one.</div>';
+  $('#dials').innerHTML=dial(wr,'Won')+dial(pc('disc'),'Disciplined')+dial(pc('strat'),'On plan')+dial(pc('inst'),'Trusted gut');
+  const last=desc()[0];$('#lesson').innerHTML=last?`${esc(last.learn)}<small class="lb">${esc(last.stock)} · ${last.date}</small>`:'Nothing yet.';
+  list()}
+/* gut check form */
+$('#rc').innerHTML=[['disc','Were you disciplined?'],['strat','Did you follow your strategy?'],['inst','Did you trust your instincts?']].map(([k,q])=>`<fieldset class="gc"><legend style="position:absolute;opacity:0">${q}</legend><span>${q}</span><div class="seg"><label><input type="radio" name="${k}" value="1" required><span>Yes</span></label><label><input type="radio" name="${k}" value="0"><span>No</span></label></div></fieldset>`).join('');
+const form=$('#form');
+function reset(){form.reset();form.date.value=new Date().toISOString().slice(0,10)}
+form.onsubmit=e=>{e.preventDefault();const f=new FormData(form);D.push({id:Date.now(),date:f.get('date'),stock:f.get('stock').trim(),market:f.get('market'),tf:f.get('tf'),buy:f.get('buy'),sell:f.get('sell'),pnl:parseFloat(f.get('pnl'))||0,rr:parseFloat(f.get('rr'))||0,learn:f.get('learn').trim(),disc:f.get('disc')==='1',strat:f.get('strat')==='1',inst:f.get('inst')==='1'});save();render();reset();const b=$('#save');b.textContent='Saved. Dashboard updated.';setTimeout(()=>b.textContent='Save to journal',2200)};
+$('#q').oninput=list;
+function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id===v));document.querySelectorAll('.dock [data-v]').forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));scrollTo(0,0);render()}
+document.querySelectorAll('.dock [data-v]').forEach(b=>b.onclick=()=>show(b.dataset.v));
+$('#add').onclick=()=>{show('jrn');form.stock.focus({preventScroll:true})};
+reset();render();
+</script>
+</body>
+</html>
