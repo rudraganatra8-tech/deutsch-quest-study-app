@@ -1,0 +1,14 @@
+{
+  "id": "./",
+  "name": "DeutschQuest — Your German Adventure",
+  "short_name": "DeutschQuest",
+  "description": "A fun, offline-friendly 7-day German syllabus quest with a revision day.",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#f6f7ff",
+  "background_color": "#f7f6fb",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

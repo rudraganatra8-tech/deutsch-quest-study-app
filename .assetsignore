@@ -1,0 +1,10 @@
+*.zip
+*.md
+wrangler.toml
+.assetsignore
+.git
+.git/**
+.github
+.github/**
+node_modules
+node_modules/**

@@ -1,0 +1,5 @@
+name = "deutsch-quest-study-app"
+compatibility_date = "2026-10-18"
+
+[assets]
+directory = "./"
