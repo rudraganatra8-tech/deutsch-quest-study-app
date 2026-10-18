@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7ff">
+  <meta name="description" content="A fun, focused German exam study app built from your teacher's syllabus.">
+  <title>DeutschQuest — Your German Adventure</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="sidebar">
+      <a class="brand" href="#" data-screen="today" aria-label="Deutsch Quest home">
+        <span class="brand-mark">D<span>Q</span></span>
+        <span><strong>DeutschQuest</strong><small>Your German adventure</small></span>
+      </a>
+      <div class="course-chip"><span class="chip-dot"></span> STANDARD XI <span class="chip-divider">/</span> SPRACHLOTSEN 1</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-screen="today"><span>⚔</span> My quest <kbd>1</kbd></button>
+        <button class="nav-link" data-screen="learn"><span>✦</span> One step <kbd>2</kbd></button>
+        <button class="nav-link" data-screen="quiz"><span>🎮</span> Mini-game <kbd>3</kbd></button>
+        <button class="nav-link" data-screen="cards"><span>▱</span> Word cards <kbd>4</kbd></button>
+        <button class="nav-link" data-screen="plan"><span>🗺</span> Journey <kbd>5</kbd></button>
+        <button class="nav-link" data-screen="resources"><span>↗</span> English boosts <kbd>6</kbd></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mini-streak"><span class="flame">♨</span><div><strong id="sideStreak">0 day streak</strong><small>Small steps count.</small></div></div>
+        <div class="offline-note"><span class="online-dot"></span><span>Progress stays on this device</span></div>
+      </div>
+    </aside>
+    <div class="main-column">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">D<span>Q</span></span><strong>DeutschQuest</strong></div>
+        <div class="breadcrumb">YOUR GERMAN STUDY SPACE <span>/</span> <strong id="sectionName">TODAY</strong></div>
+        <div class="top-metrics"><span class="metric-pill"><span class="flame">🔥</span><b id="topStreak">0</b><small>streak</small></span><span class="metric-pill hp-pill"><span>❤️</span><b id="topHp">100</b><small>HP</small></span><span class="metric-pill xp-pill"><span>✦</span><b id="topXp">0</b><small>XP</small></span><button id="installButton" class="install-button" hidden>Install app</button></div>
+      </header>
+      <main id="screen" tabindex="-1"></main>
+      <nav class="mobile-tabs" aria-label="Study app navigation">
+        <button class="active" data-screen="today"><span>⚔</span>Quest</button>
+        <button data-screen="learn"><span>✦</span>Lesson</button>
+        <button data-screen="quiz"><span>🎮</span>Play</button>
+        <button data-screen="cards"><span>▱</span>Cards</button>
+        <button data-screen="plan"><span>🗺</span>Map</button>
+        <button data-screen="resources"><span>↗</span>Fun</button>
+      </nav>
+      <footer class="app-footer">Made for your German quest <span>•</span> Kleine Schritte zählen! <span>•</span> Your progress stays on this device</footer>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="celebration" class="celebration" aria-hidden="true"></div>
+</body>
+</html>
